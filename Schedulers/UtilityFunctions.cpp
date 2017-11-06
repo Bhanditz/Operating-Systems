@@ -130,8 +130,6 @@ using namespace std;
         printf("%04d: %4d %4d %4d %4d %1d | %5d %5d %5d %5d\n",
         p->PID,p->ArrivalTime,p->TotalCPUTime,p->CPUBurst,p->IOBurst, p->staticPriority,
         p->finishingTime, p->finishingTime - p->ArrivalTime, p->TotalIOTime, p->TotalCPUWaitingTime);
-     //   cout<<setfill('0')<<setw(4)<<p->staticPriority<<":\t"<<p->ArrivalTime<<"\t"<<p->TotalCPUTime<<"\t"<<p->CPUBurst<<"\t"<<p->IOBurst<<" "<<p->priority<<" |\t";
-      //  cout<<p->finishingTime<<"\t"<<(p->finishingTime - p->ArrivalTime)<<"\t"<<p->TotalIOTime<<"\t"<<p->TotalCPUWaitingTime<<endl;
     }
 
     void UtilityFunctions::printState(int state)

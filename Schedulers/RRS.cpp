@@ -28,9 +28,3 @@ using namespace std;
         ReadyQueue.pop();
         return(ans);
     }
-
-//    void Scheduler::addProcess()
-//    {
-//
-//    }
-

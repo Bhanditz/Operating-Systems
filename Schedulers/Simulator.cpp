@@ -1,6 +1,7 @@
 /**
 Author: Kumar Mehta
 Operating Systems: Implementing a scheduler through discrete event simulation
+Program arguments: [-v](optional) [-s<schedspec>] inputfile randfile
 
 */
 
@@ -62,7 +63,6 @@ public:
             int randNumber;
             while(inputFile>>token)
             {
-              //  cout<<"while";
                 AT = functionsObject->convertStringToInteger(token);
                 inputFile>>token;
                 CT = functionsObject->convertStringToInteger(token);
@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
                 exit(1);
     }
     string SchedulerArg(argScheduler);
-  //  cout<<argc<<endl;
+   //  cout<<argc<<endl;
    // cout<<SchedulerArg<<" "<<argv[optind]<<" "<<argv[optind + 1]<<endl;
     Event* EventQueueTail = NULL;
     string argInputFile = argv[optind];
@@ -151,9 +151,12 @@ int main(int argc, char* argv[])
     Event* EventQueueHead = NULL;
     currentList->readInput(argInputFile);
    // currentList->traverseProcessList();
+
+/**
+Create new event for all processes in process vector
+*/
     for(int i = 0 ; i < currentList->numberOfProcesses ; i++)
     {
-    //    cout<<i;
         Event* temp = new Event(currentList->inputProcesses[i],currentList->inputProcesses[i]->ArrivalTime, READY, CREATED, 0);
         functions->sortedInsert(EventQueueHead,temp);
     }
@@ -170,7 +173,6 @@ int main(int argc, char* argv[])
         OSschedular = new RRS(argScheduler,argTimeQuantum);
     else
         OSschedular = new PriorityScheduler(argScheduler,argTimeQuantum);
-    //cout<<EventQueueHead->next->StateBefore;
     int ProcessesInBlocked = 0;
     int IOStart = 0;
     double TotalIOTime = 0.0;
@@ -180,14 +182,11 @@ After creating events given in the input file, Simulation of events starts here
 */
     while(simulation)
     {
-    //    functions->printEventQueue(simulation);
-       // cout<<simulation->StateBefore;
       //  cout<<"simulation";
         bool CALL_SCHEDULER = false;
         int CURRENT_TIME = simulation->TimeStamp;
         simulation->EventProcess->TimeInLastState = CURRENT_TIME - simulation->EventProcess->LastStateTimeStamp;
         simulation->EventProcess->LastStateTimeStamp = CURRENT_TIME;
-       //cout<<simulation->StateAfter;
         switch(simulation->StateAfter)
         { // which state to transition to?
 
@@ -206,7 +205,6 @@ After creating events given in the input file, Simulation of events starts here
                     OSschedular->addProcessToQueue(simulation->EventProcess);
                     simulation->EventProcess->state = READY;
                     CALL_SCHEDULER = true; // conditional on whether something is run
-    //                cout<<"Done";
                     break;
                 }
             // must add to run queue
@@ -215,10 +213,8 @@ After creating events given in the input file, Simulation of events starts here
             // create event for either preemption or blocking
             {
                 OSschedular->currentRunningProcess = simulation->EventProcess;
-         //       cout<<"RUNNING";
                 simulation->EventProcess->state = RUNNING;
                 int actualBurst,processMaxCPUBurst;
-              //  cout<<simulation->EventProcess->remainingCPUBurst<<" ";
                 if(simulation->EventProcess->remainingCPUBurst <= 0)
                 {
                     processMaxCPUBurst = simulation->EventProcess->CPUBurst;
@@ -272,7 +268,6 @@ After creating events given in the input file, Simulation of events starts here
                 simulation->EventProcess->TotalIOTime += IOBurst;
                 simulation->EventProcess->dynamicPriority = simulation->EventProcess->staticPriority;
                 simulation->EventProcess->remainingTime = simulation->EventProcess->remainingTime - simulation->TimeInLastState;
-             //   simulation->EventProcess->remainingCPUBurst -= simulation->TimeInLastState;
                 if(v_flag)
                     functions->verboseOutput(simulation);
                 Event* temp = new Event(simulation->EventProcess,CURRENT_TIME + IOBurst, READY, BLOCKED, IOBurst);
@@ -286,8 +281,6 @@ After creating events given in the input file, Simulation of events starts here
                 OSschedular->currentRunningProcess = NULL;
                 simulation->EventProcess->remainingTime = simulation->EventProcess->remainingTime - simulation->TimeInLastState;
                 OSschedular->addProcessToQueue(simulation->EventProcess);
-            //    simulation->EventProcess->remainingCPUBurst -= OSschedular->timeQuantum;
-                //simulation->StateAfter = READY;
                 if(v_flag)
                     functions->verboseOutput(simulation);
                 CALL_SCHEDULER = true;
@@ -299,8 +292,6 @@ After creating events given in the input file, Simulation of events starts here
                 simulation->EventProcess->finishingTime = CURRENT_TIME;
                 if(v_flag)
                     functions->verboseOutput(simulation);
-                //cout<<simulation->EventProcess->PID<<" Done!"<<endl;
-                //OSschedular->ProcessesInReadyQueue
                 CALL_SCHEDULER = true;
                 break;
             }
@@ -321,15 +312,12 @@ After creating events given in the input file, Simulation of events starts here
             Process* CURRENT_RUNNING_PROCESS = OSschedular->currentRunningProcess;
             if (CURRENT_RUNNING_PROCESS == NULL)
             {
-             //   cout<<"yes";
                 CURRENT_RUNNING_PROCESS = OSschedular->getNextProcess();
                 if (CURRENT_RUNNING_PROCESS == NULL)
                 {
       //              cout<<"continue";
                 continue;
                 }
-        //        cout<<"here";
-            //    functions->printEventQueue(simulation);
                 Event* temp = new Event(CURRENT_RUNNING_PROCESS, CURRENT_TIME, RUNNING, READY, 0);
                 functions->sortedInsert(simulation,temp);
                 // create event to make process runnable for same time.
