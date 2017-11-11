@@ -3,4 +3,4 @@ Mini projects to implement following features of an OS:
 
 -> Linker
 
--> Process scheduling algorithms through discrete event simuation
+-> Process scheduler (algorithms: FCFS, LCFS, SJF, RRS, Priority Scheduling), through discrete event simuation
